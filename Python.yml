@@ -1,0 +1,44 @@
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+nltk.download('vader_lexicon')  # Download Vader's sentiment lexicon (one-time)
+
+def sentiment_analysis(text):
+    """Analyzes the sentiment of a given text string.
+
+    Args:
+        text (str): The text to analyze.
+
+    Returns:
+        dict: A dictionary containing the following keys:
+            'sentiment': Overall sentiment (positive, negative, or neutral)
+            'compound': Compound score (float) from VADER sentiment analyzer
+            'positive': Positive score (float) from VADER sentiment analyzer
+            'negative': Negative score (float) from VADER sentiment analyzer
+            'neutral': Neutral score (float) from VADER sentiment analyzer
+    """
+
+    analyzer = SentimentIntensityAnalyzer()
+    scores = analyzer.polarity_scores(text)
+
+    sentiment = 'positive' if scores['pos'] > scores['neg'] else (
+        'negative' if scores['neg'] > scores['pos'] else 'neutral'
+    )
+
+    return {
+        'sentiment': sentiment,
+        'compound': scores['compound'],
+        'positive': scores['pos'],
+        'negative': scores['neg'],
+        'neutral': scores['neu'],
+    }
+
+# Example usage with sample social media post and restaurant review
+social_media_post = "This restaurant was amazing! The food was delicious and the service was friendly. I highly recommend it!"
+restaurant_review = "The food was disappointing, and the wait staff seemed inattentive. I won't be returning."
+
+social_media_analysis = sentiment_analysis(social_media_post)
+restaurant_review_analysis = sentiment_analysis(restaurant_review)
+
+print("Social Media Post Sentiment:", social_media_analysis)
+print("Restaurant Review Sentiment:", restaurant_review_analysis)
